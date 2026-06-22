@@ -1,0 +1,4 @@
+gen_icon.py
+create_repo.py
+*.pyc
+.DS_Store

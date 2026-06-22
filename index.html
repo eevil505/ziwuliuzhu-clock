@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>子午流注 · 墨水屏版</title>
+<meta name="theme-color" content="#f5f0e8">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="子午流注">
+<link rel="manifest" href="/manifest.json">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #f5f0e8;
+    font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    color: #1a1a1a;
+  }
+  .device {
+    background: #faf5ee;
+    border: 1px solid #d0c8b8;
+    border-radius: 12px;
+    padding: 20px 18px 18px;
+    max-width: 520px;
+    width: 100%;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  }
+
+  .top-line {
+    text-align: center;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #3a3020;
+    letter-spacing: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #d0c8b8;
+    margin-bottom: 12px;
+  }
+
+  .clock-row {
+    text-align: center;
+    margin: 6px 0 2px;
+  }
+  .clock-row .time {
+    font-size: 4.5rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    letter-spacing: 6px;
+    line-height: 1.1;
+    font-family: 'Noto Serif SC', serif;
+  }
+  .clock-row .time .sep { color: #666; letter-spacing: 2px; }
+  .clock-row .time .sec { font-size: 1.8rem; color: #666; letter-spacing: 2px; }
+
+  .date-row {
+    text-align: center;
+    font-size: 0.85rem;
+    color: #555;
+    letter-spacing: 4px;
+    margin: 2px 0 10px;
+  }
+
+  .gz-row {
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    padding: 8px 12px;
+    border: 1px solid #d8d0c0;
+    border-radius: 6px;
+    background: #f8f4ec;
+    margin-bottom: 10px;
+  }
+  .gz-item { text-align: center; }
+  .gz-item .label { font-size: 0.55rem; color: #888; letter-spacing: 1px; }
+  .gz-item .val {
+    font-size: 0.95rem;
+    color: #3a3020;
+    font-weight: 700;
+    letter-spacing: 2px;
+  }
+
+  .sc-box {
+    border: 1px solid #d0c8b8;
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin-bottom: 8px;
+    background: #f8f4ec;
+  }
+  .sc-box .sc-label {
+    font-size: 0.55rem;
+    color: #888;
+    letter-spacing: 3px;
+    margin-bottom: 6px;
+  }
+  .sc-main {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .sc-branch { font-size: 2.2rem; font-weight: 700; color: #1a1a1a; }
+  .sc-info { text-align: center; }
+  .sc-info .l { font-size: 0.5rem; color: #888; letter-spacing: 1px; }
+  .sc-info .v { font-size: 0.9rem; color: #2a2a2a; font-weight: 700; }
+  .sc-elem {
+    display: inline-block;
+    padding: 2px 12px;
+    border: 1px solid #3a3020;
+    border-radius: 3px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    letter-spacing: 2px;
+  }
+  .sc-tip {
+    text-align: center;
+    margin-top: 6px;
+    padding-top: 6px;
+    border-top: 1px solid #e0d8c8;
+    font-size: 0.7rem;
+    color: #555;
+    letter-spacing: 1px;
+  }
+
+  .sc-grid {
+    display: grid;
+    grid-template-columns: repeat(6,1fr);
+    gap: 3px;
+  }
+  .sc-cell {
+    text-align: center;
+    padding: 4px 1px;
+    border: 1px solid #e0d8c8;
+    border-radius: 4px;
+    background: #f8f4ec;
+  }
+  .sc-cell.active {
+    background: #2a2a2a;
+    border-color: #2a2a2a;
+  }
+  .sc-cell.active .sb { color: #f5f0e8; }
+  .sc-cell.active .so { color: #ccc; }
+  .sc-cell .sb { font-size: 0.85rem; color: #3a3020; font-weight: 700; }
+  .sc-cell .so { font-size: 0.55rem; color: #666; }
+  .sc-cell .st { font-size: 0.5rem; color: #888; }
+
+  .footer {
+    text-align: center;
+    margin-top: 8px;
+    padding-top: 6px;
+    border-top: 1px solid #e0d8c8;
+    font-size: 0.5rem;
+    color: #aaa;
+    letter-spacing: 3px;
+  }
+
+  @media (max-width:400px) {
+    .clock-row .time { font-size: 3.2rem; }
+    .clock-row .time .sec { font-size: 1.2rem; }
+    .sc-grid { grid-template-columns: repeat(4,1fr); }
+  }
+</style>
+</head>
+<body>
+<div class="device">
+  <div class="top-line">子 午 流 注</div>
+
+  <div class="clock-row">
+    <div class="time">
+      <span id="h0">0</span><span id="h1">0</span>
+      <span class="sep">:</span>
+      <span id="m0">0</span><span id="m1">0</span>
+    </div>
+  </div>
+  <div class="date-row" id="dateDisplay">---</div>
+
+  <div class="gz-row">
+    <div class="gz-item"><div class="label">年</div><div class="val" id="gzY">--</div></div>
+    <div class="gz-item"><div class="label">月</div><div class="val" id="gzM">--</div></div>
+    <div class="gz-item"><div class="label">日</div><div class="val" id="gzD">--</div></div>
+    <div class="gz-item"><div class="label">时</div><div class="val" id="gzH">--</div></div>
+  </div>
+
+  <div class="sc-box">
+    <div class="sc-label">✦ 当 前 时 辰 ✦</div>
+    <div class="sc-main">
+      <div><div class="sc-branch" id="scBranch">子</div></div>
+      <div class="sc-info"><div class="l">脏腑</div><div class="v" id="scOrgan">胆</div></div>
+      <div class="sc-info"><div class="l">经络</div><div class="v" id="scMeridian">足少阳胆经</div></div>
+      <div class="sc-info"><div class="l">时段</div><div class="v" id="scRange">23:00</div></div>
+      <div><div class="sc-elem" id="scElem">水</div></div>
+    </div>
+    <div class="sc-tip" id="scTip">🌙 宜睡觉 · 胆经当令 · 养阳气</div>
+  </div>
+
+  <div class="sc-grid" id="scGrid"></div>
+  <div class="footer">· 五 行 养 生 ·</div>
+</div>
+
+<script>
+// 注册 Service Worker（PWA 安装到桌面支持）
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/service-worker.js');
+  });
+}
+
+const BRANCHES=['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
+const STEMS=['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'];
+const S=[
+  {b:'子',o:'胆',m:'足少阳胆经',e:'水',h:23,t:'🌙 宜睡觉 · 胆经当令 · 养阳气'},
+  {b:'丑',o:'肝',m:'足厥阴肝经',e:'木',h:1,t:'🌙 熟睡养肝 · 肝藏血 · 助排毒'},
+  {b:'寅',o:'肺',m:'手太阴肺经',e:'金',h:3,t:'🌙 深度睡眠 · 肺朝百脉'},
+  {b:'卯',o:'大肠',m:'手阳明大肠经',e:'金',h:5,t:'🌅 起床排便 · 宜饮温水'},
+  {b:'辰',o:'胃',m:'足阳明胃经',e:'土',h:7,t:'🍳 吃早餐 · 胃经当令'},
+  {b:'巳',o:'脾',m:'足太阴脾经',e:'土',h:9,t:'💪 工作学习 · 脾经旺运化'},
+  {b:'午',o:'心',m:'手少阴心经',e:'火',h:11,t:'😴 午餐小睡 · 心经旺养心'},
+  {b:'未',o:'小肠',m:'手太阳小肠经',e:'火',h:13,t:'🍵 小肠吸收 · 宜午后休息'},
+  {b:'申',o:'膀胱',m:'足太阳膀胱经',e:'水',h:15,t:'💧 多喝水 · 膀胱经旺排毒'},
+  {b:'酉',o:'肾',m:'足少阴肾经',e:'水',h:17,t:'🫘 补肾养肾 · 肾经当令'},
+  {b:'戌',o:'心包',m:'手厥阴心包经',e:'火',h:19,t:'🚶 散步放松 · 心包经旺'},
+  {b:'亥',o:'三焦',m:'手少阳三焦经',e:'火',h:21,t:'🧘 静养 · 准备入睡'}
+];
+function i(h){if(h===23||h===0)return 0;if(h===1||h===2)return 1;if(h===3||h===4)return 2;if(h===5||h===6)return 3;if(h===7||h===8)return 4;if(h===9||h===10)return 5;if(h===11||h===12)return 6;if(h===13||h===14)return 7;if(h===15||h===16)return 8;if(h===17||h===18)return 9;if(h===19||h===20)return 10;return 11;}
+function dg(d){const b=new Date(1900,0,1),n=Math.round((d-b)/864e5);return STEMS[((n%10)+10)%10]+BRANCHES[((n%12)+12)%12];}
+function yg(y){const o=y-1984;return STEMS[((o%10)+10)%10]+BRANCHES[((o%12)+12)%12];}
+function hg(ds,h){const id=i(h);return STEMS[([0,2,4,6,8][ds%5]+id)%10]+BRANCHES[id];}
+function mg(y,m){const ys=((y-1984)%10+10)%10,mb=(m+1)%12;return STEMS[([2,4,6,8,0][ys%5]+(mb-2+12)%12)%10]+BRANCHES[mb];}
+function p(n){return String(n).padStart(2,'0')}
+function update(){
+  const n=new Date(),h=n.getHours(),y=n.getFullYear(),mo=n.getMonth()+1;
+  const hs=p(h),ms=p(n.getMinutes());
+  document.getElementById('h0').textContent=hs[0];document.getElementById('h1').textContent=hs[1];
+  document.getElementById('m0').textContent=ms[0];document.getElementById('m1').textContent=ms[1];
+  document.getElementById('dateDisplay').textContent=`${y}年${mo}月${n.getDate()}日 · 星期${['日','一','二','三','四','五','六'][n.getDay()]}`;
+  const d=dg(n),ds=STEMS.indexOf(d[0]);
+  document.getElementById('gzY').textContent=yg(y);document.getElementById('gzM').textContent=mg(y,mo);
+  document.getElementById('gzD').textContent=d;document.getElementById('gzH').textContent=hg(ds,h);
+  const idx=i(h),sc=S[idx];
+  document.getElementById('scBranch').textContent=sc.b;
+  document.getElementById('scOrgan').textContent=sc.o;
+  document.getElementById('scMeridian').textContent=sc.m;
+  document.getElementById('scRange').textContent=String(sc.h).padStart(2,'0')+':00';
+  document.getElementById('scElem').textContent=sc.e;
+  document.getElementById('scTip').textContent=sc.t;
+  document.getElementById('scGrid').innerHTML=S.map((s,j)=>`<div class="sc-cell ${j===idx?'active':''}"><div class="sb">${s.b}</div><div class="so">${s.o}</div><div class="st">${String(s.h).padStart(2,'0')}:00</div></div>`).join('');
+}
+update();
+// 墨水屏版每分钟更新一次，不刷秒
+setInterval(update,10000);
+</script>
+</body>
+</html>
