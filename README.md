@@ -3,7 +3,7 @@
 > 典雅的中式时辰养生时钟 | 实时显示十二时辰、经络当令、五行生克与四柱八字
 
 <p align="center">
-  <img src="./screenshot.png" alt="子午流注·墨水屏时钟 截图" width="80%" style="max-width:600px;">
+  <img src="./screenshot.jpg" alt="子午流注·墨水屏时钟 截图" width="80%" style="max-width:600px;">
 </p>
 
 [![PWA](https://img.shields.io/badge/PWA-✓-brightgreen)](https://developer.mozilla.org/zh-CN/docs/Web/Progressive_web_apps)
